@@ -1,0 +1,101 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Profile.Model.Models
+
+@model  Profile.Web.ViewModels.UserInfoViewModel
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+ 
+<div class="content">
+  <div class="content__position">
+    <input class="current__page hide" name="currentPageToOpen" type="text" asp-for="IsResumeExists"/>
+    <div class="content__main clearfix">
+      <div class="content__image_block clearfix">
+        @if (Model.StartUserInfo.Photo != null)
+      {
+        <img class="content__main_image" alt="userPhoto" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.StartUserInfo.Photo))" />
+    }
+    else
+    {
+      <img class="content__main_image" src="~/images/man.png" alt="userPhoto">
+  }
+      </div>
+      <div class="content__information">
+        <ul class="content__information_common">
+          <li class="content__information_name">
+            <h3>@Model.StartUserInfo.EnName @Model.StartUserInfo.EnSurname</h3>
+          </li>
+          <li class="content__information_cv">
+            <h3>
+              @if (Model.Stream != null)
+            {@Model.Stream.StreamFullName}
+          </h3>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="content__data">
+      <ul class="content__data_list ">
+          <li class="content__data_email">
+              <i class="fa-fw fa fa-envelope-o " aria-hidden="true"></i>
+              <span>
+                  @{var user = await UserManager.GetUserAsync(User);
+                var email = user.Email;}
+                  @email
+              </span>
+          </li>
+          <li class="content__data_phone">
+              <i class="fa-fw fa fa-phone-square" aria-hidden="true"></i>
+              <span>
+                  @Model.StartUserInfo.Phone
+              </span>
+          </li>
+          @if (Model.StartUserInfo.Skype != null)
+          {
+              <li class="content__data_skype">
+                  <i class="fa-fw fa fa-skype" aria-hidden="true"></i>
+                  <span>@Model.StartUserInfo.Skype</span>
+              </li>
+          }
+          @if (Model.StartUserInfo.Linkedin != null)
+          {
+              <li class="content__data_inkedIn">
+                  <i class="fa-fw fa fa-linkedin" aria-hidden="true"></i>
+                  <span>@Model.StartUserInfo.Linkedin</span>
+              </li>
+          }
+      </ul>
+  </div>
+  </div>
+    <div id="overlay"></div>
+    <div class="content__pop-up">
+        <div class="content__pop-up_main">
+            <div class="content__pop-up_header clearfix">
+                <h3>Update profile picture</h3>
+                <span class="content__pop-up_close">
+                    <i class="fa fa-times fa-3x content__pop-up_close" aria-hidden="true"></i>
+                </span>
+            </div>
+            <div class="content__pop-up_text">
+                It will be easier to get to know you if you upload your real photo.
+                You can download the image in JPG, JPEG, PNG, BMP format. The file size must not exceed 3 Mbyte.
+            </div>
+            <label for="fileInput" class="content__upload_label">
+                <div class="btn btn-primary button_width" id="choose_image_button">
+                    Choose image
+                </div>
+            </label>
+              <input type="file" class="content__pop-up_upload" id="fileInput" name="fileInput" accept="image/jpg,image/jpeg,image/png,image/bpm" />
+              <div class="content__pop-up_image" >
+                  <div class="content__image_wrapper">
+                  </div>
+                  <button class="content__pop-up_button btn btn-primary button__width" id="upload_photo_button" type="button">Upload photo</button>
+              </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/fadeIn.js"></script>

@@ -1,0 +1,58 @@
+﻿@using System.Collections.Generic
+@using System.Linq
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@using Profile.Model.Models
+@model Profile.Web.ViewModels.AccountViewModels.LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="content">
+    <div class="content__position clearfix">
+        <div class="content__text col-lg-7 col-md-6 col-sm-12">
+            <p>Уважаемые выпускники!</p>
+            Данное приложение – это Ваш помощник в составлении резюме.
+            <p>При заполнении CV помните:</p>
+            <ul class="content__text_list">
+                <li>
+                    - Заполнять информацию необходимо на
+                    <span class="content__text_eng">
+                        английском
+                    </span> языке,
+                </li>
+                <li>- Воспользуйтесь рекомендациями по составлению резюме,</li>
+                <li>- Не пропускайте блоки.</li>
+            </ul>
+            После заполнения не забудьте сохранить Ваше CV и информировать об этом HR.
+            <p class="content__text_mail">При появлении вопросов пишите: <a href="mailto:Hr@it-academy.by" rel="nofollow">Hr@it-academy.by</a></p>
+        </div>
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "loginForm", @class = "form-horizontal content__form col-lg-4 col-md-6 col-sm-12" }))
+        {
+            <!--this helper shows ONLY model error with key ["wrong_cred"] from the controller, others are omitted-->
+            <div class="server-validation-error">
+                @Html.ValidationMessage("wrong_creds")
+            </div>
+            <div class="content__form_email">
+                <!--this span is shown when js validation is not passed on client's side-->
+                <span asp-validation-for="Email" class="error__text"></span>
+                <input asp-for="Email" class="content__input_email form-control" placeholder="e-mail">
+            </div>
+            <div class="content__form_password">
+                <!--this span is shown when js validation is not passed on client's side-->
+                <span asp-validation-for="Password" class="error__text"></span>
+                <input asp-for="Password" class="content__input_password form-control" placeholder="password">
+            </div>
+            <span class="content__form_button">
+                <input class="btn button__submit btn-primary" type="submit" value="Log in">
+            </span>
+            <a href="#"><span class="content__input_recovery">Forgot your password ?</span></a>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

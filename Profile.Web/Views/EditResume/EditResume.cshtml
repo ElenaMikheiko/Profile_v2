@@ -1,0 +1,285 @@
+@using Profile.Model.Models
+@model Profile.Web.ViewModels.ResumeViewModel
+@{
+  ViewData["Title"] = "Edit resume";
+}
+@section Scripts {
+  <script src="~/js/lib/jquery.inputmask.bundle.js"></script>
+  <script src="~/js/lib/phone.js"></script>
+}
+@{
+    #region For DropDownLists Months and Years
+    Model.Years.Insert(0, 0);
+    IDictionary<int, string> Years = Model.Years.Select((key, value) => new { key, value }).ToDictionary(year => year.key, year => year.key != 0 ? year.key.ToString() : "");
+
+    #endregion
+
+}
+<form asp-action="EditResume" asp-controller="EditResume" method="post" asp-route-resumeId="@Model.ResumeId">
+  @Html.HiddenFor(m => m.ResumeId)
+  @Html.HiddenFor(m => m.UserInfo.Email)
+  <ul class="resume__list col-lg-7 col-md-7 col-sm-7">
+    <li class="resume__edit clearfix">
+      <h5 class="resume__edit_email">
+        @Model.UserInfo.Email
+      </h5>
+      <ul class="resume__edit_personal clearfix">
+        <li>
+          <label for="edit__name">Name</label>
+          <input type="text" id="edit__name" placeholder="Name" class="form-control" maxlength="25" asp-for="UserInfo.EnName" />
+        </li>
+        <li>
+          <label for="edit__surname">Surname</label>
+          <input type="text" id="edit__surname" placeholder="Surname" class="form-control" maxlength="25" asp-for="UserInfo.EnSurname" />
+        </li>
+        <li>
+          <i class="fa-fw fa fa-phone-square" aria-hidden="true"></i>
+          <input type="text" id="phone" placeholder="+375 (__) ___-__-__" class="form-control" asp-for="UserInfo.Phone" />
+        </li>
+        <li>
+          <i class="fa-fw fa fa-skype" aria-hidden="true"></i>
+          <input type="text" placeholder="Skype" class="form-control" maxlength="30" asp-for="UserInfo.Skype" />
+        </li>
+        <li>
+          <i class="fa-fw fa fa-linkedin" aria-hidden="true"></i>
+          <input type="text" placeholder="LinkedIn" class="form-control" maxlength="150" asp-for="UserInfo.Linkedin" />
+        </li>
+      </ul>
+      <ul class="resume__edit_image clearfix">
+        <li>
+          @if (Model.UserInfo.Photo != null)
+          {
+            <img class="tab__info_avatar" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.UserInfo.Photo))" />
+          }
+          else
+          {
+            <img class="tab__info_avatar" src="~/images/man.png" alt="photo">
+          }
+        </li>
+      </ul>
+    </li>
+    <li class="resume__edit_content">
+      <ul>
+        <li class="resume__edit_objective">
+          <h5>Objective</h5>
+          <div>
+              @Html.HiddenFor(m => m.StreamFullName);
+              I am applying for a position of @Model.StreamFullName.
+          </div>
+        </li>
+        <li class="resume__summary">
+          <h5>Summary</h5>
+          <div class="resume__edit_textarea">
+            <textarea rows="4" class="resume__edit_textarea-input form-control" maxlength="1000" asp-for="Summary"></textarea>
+          </div>
+        </li>
+        <li class="resume__edit_skills">
+          <h5>Skills</h5>
+          <div class="input-group input-group-sm tab__skills_input">
+            @Html.ListBoxFor(m => m.Skills, new MultiSelectList(Model.SkillList, nameof(Skill.Name), nameof(Skill.Name)),
+                     htmlAttributes: new { @class = "tab__skills_select _uskills", multiple = "multiple" })
+          </div>
+        </li>
+        <li class="resume__languages">
+          <h5>Languages</h5>
+          <div class="tab__languages_form">
+            @foreach (var foreignLanguage in Model.ForeignLanguages)
+            {
+              @Html.DropDownList("FakeNameForLanguage",
+                  new SelectList(Model.Languages, nameof(Language.Id), nameof(Language.Name), foreignLanguage.Key),
+                  htmlAttributes: new { @class = "tab__languages_dropdown _ulanguages" })
+              <span class="tab__languages_level">
+                @Html.DropDownListFor(
+                    m => m.ForeignLanguages[foreignLanguage.Key],
+                    new SelectList(Model.LanguageLevels, nameof(LanguageLevel.Id), nameof(LanguageLevel.LevelName), 0),
+                    htmlAttributes: new { @class = "tab__level _langlevel" })
+                <span class="tab__remove fa fa-times"></span>
+              </span>
+              <br />
+            }
+          </div>
+        </li>
+        <li class="resume__edit_education">
+          <h5>Education</h5>
+          @for (int i = 0; i < Model.Educations.Count(); i++)
+          {
+            <ul class="resume__edit_education-list">
+                <li>
+                    <span>Level</span>
+                    @Html.DropDownListFor(model => model.Educations[i].EducationLevelId, new SelectList(Model.EducationLevels, nameof(EducationLevel.Id), nameof(EducationLevel.Level)),
+                   htmlAttributes: new { @class = "form-control resume__edit_education-level" })
+                </li>
+              <li>
+                @Html.DropDownListFor(model => model.Educations[i].YearOfAdmission, new SelectList(Years, "Key", "Value", 0),
+                         htmlAttributes: new { @class = "form-control resume__edit_education-year" })
+                @Html.DropDownListFor(model => model.Educations[i].YearOfGraduation, new SelectList(Years, "Key", "Value", 0),
+                         htmlAttributes: new { @class = "form-control resume__edit_education-year" })
+                <input type="text" class="form-control resume__edit_institution" placeholder="Name of educational institution" asp-for="Educations[i].EducationalInstitution" />
+              </li>
+              <li>
+                <span>Department</span>
+                <input class="form-control" type="text" asp-for="Educations[i].Department" />
+              </li>
+              <li>
+                <span>Specialization</span>
+                <input class="form-control" type="text" asp-for="Educations[i].Specialization" />
+              </li>
+              <li></li>
+            </ul>
+          }
+        </li>
+        <li class="resume__edit_courses">
+          <h5>Professional development, courses</h5>
+          @for (int i = 0; i < Model.Courses.Count(); i++)
+          {
+            <div class="resume__edit_float clearfix">
+              @Html.DropDownListFor(model => model.Courses[i].YearOfGraduation, new SelectList(Years, "Key", "Value", 0),
+                       htmlAttributes: new { @class = "resume__edit-input resume__edit-dropdown" })
+              <input type="text" class="resume__edit-input form-control" placeholder="Organization" asp-for="Courses[i].Organization" />
+              <div>
+                <span>Specialization</span>
+                <input type="text" class="resume__edit-input form-control" placeholder="Specialization" asp-for="Courses[i].Specialization" />
+              </div>
+            </div>
+          }
+        </li>
+        <li class="resume__edit_certificates">
+          <h5>Electronic certificates</h5>
+          @for (int i = 0; i < Model.Certificates.Count(); i++)
+          {
+            <div class="resume__edit_float clearfix">
+              @Html.DropDownListFor(model => model.Certificates[i].YearOfAttestation, new SelectList(Years, "Key", "Value", 0),
+                       htmlAttributes: new { @class = "resume__edit-input resume__edit-dropdown" })
+              <input type="text" class="resume__edit-input form-control" placeholder="Organization" asp-for="Certificates[i].Organization" />
+              <div>
+                <span>Certificate title</span>
+                <input type="text" class="resume__edit-input form-control" placeholder="Certificate" asp-for="Certificates[i].Title" />
+              </div>
+              <div>
+                <span>Certificate link</span>
+                <input type="text" class="resume__edit-input form-control" placeholder="Link" asp-for="Certificates[i].Link" />
+              </div>
+            </div>
+          }
+        </li>
+        <li class="resume__edit_tests">
+          <h5>Tests, examinations</h5>
+          @for (int i = 0; i < Model.Exams.Count(); i++)
+          {
+            <div class="resume__edit_float clearfix">
+              @Html.DropDownListFor(model => model.Exams[i].YearOfAttestation, new SelectList(Years, "Key", "Value", 0),
+                       htmlAttributes: new { @class = "resume__edit-input resume__edit-dropdown" })
+              <input type="text" class="resume__edit-input form-control" placeholder="Organization" asp-for="Exams[i].Organization" />
+              <div>
+                <span>Certificate title</span>
+                <input type="text" class="resume__edit-input form-control" placeholder="Certificate" asp-for="Exams[i].ExamName" />
+              </div>
+            </div>
+          }
+        </li>
+        <li class="resume__work">
+          <h5>Work experience</h5>
+          @for (int i = 0; i < Model.WorkExperiences.Count(); i++)
+          {
+            <ul class="resume__edit_work">
+              <li>
+                @Html.DropDownListFor(model => model.WorkExperiences[i].SelectedStartMonth, new SelectList(Model.Months, "Key", "Value", 0),
+                         htmlAttributes: new { @class = "form-control resume__edit-dropdown" })
+                @Html.DropDownListFor(model => model.WorkExperiences[i].SelectedStartYear, new SelectList(Years, "Key", "Value", 0),
+                         htmlAttributes: new { @class = "form-control resume__edit-dropdown" })
+                <span> - </span>
+                @Html.DropDownListFor(model => model.WorkExperiences[i].SelectedEndMonth, new SelectList(Model.Months, "Key", "Value", 0),
+                         htmlAttributes: new { @class = "form-control resume__edit-dropdown" })
+                @Html.DropDownListFor(model => model.WorkExperiences[i].SelectedEndYear, new SelectList(Years, "Key", "Value", 0),
+                         htmlAttributes: new { @class = "form-control resume__edit-dropdown" })
+                @Html.CheckBoxFor(model => model.WorkExperiences[i].ToPresent, new { @class = "resume__edit_checkbox" })
+                <label for="resume__edit_checkbox">To present</label>
+              </li>
+              <li class="resume__edit_work-position">
+                <span>Position</span>
+                <input class="form-control resume__edit_work-span" type="text" placeholder="Position" asp-for="WorkExperiences[i].Position" />
+              </li>
+              <li>
+                <span>Responsobilities, task, activities</span>
+                <textarea class="form-control" placeholder="Responsobilities, task, activities" rows="4" asp-for="WorkExperiences[i].Responsibilities"></textarea>
+              </li>
+            </ul>
+          }
+        </li>
+        <li class="resume__portfolio">
+          <h5>Portfolio</h5>
+          @for (int i = 0; i < Model.Portfolios.Count(); i++)
+          {
+            <ul class="resume__portfolio_link">
+              <li>
+                <input class="resume__edit-input" type="text" asp-for="Portfolios[i].Link" />
+              </li>
+            </ul>
+          }
+        </li>
+        <li class="resume__military">
+          <h5>Military status</h5>
+          <div class="custom-controls-stacked">
+            <label class="custom-control custom-radio">
+              <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Doesn't apply">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Doesn't apply</span>
+            </label>
+            <label class="custom-control custom-radio">
+              <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Exempted">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Exempted</span>
+            </label>
+            <label class="custom-control custom-radio">
+              <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Completed">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Completed</span>
+            </label>
+            <label class="custom-control custom-radio">
+              <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Postponed">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Postponed</span>
+            </label>
+            <label class="custom-control custom-radio">
+              <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Currently serving">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Currently serving</span>
+            </label>
+          </div>
+        </li>
+        <li class="resume__additional">
+          <h5>Additional information</h5>
+          <div class="resume__edit_textarea">
+            <textarea rows="4" class="resume__edit_textarea-input form-control" maxlength="1000" asp-for="AdditionalInfo.Text"></textarea>
+          </div>
+        </li>
+        <li class="resume__edit_recommend">
+          <h5>Recommendations</h5>
+          @for (int i = 0; i < Model.Recommendations.Count(); i++)
+          {
+            <ul class="resume__edit_recommend-list">
+              <li>
+                <span>Name Surname</span>
+                <input type="text" class="resume__edit-input form-control" placeholder="Name Surname" asp-for="Recommendations[i].PersonName" />
+              </li>
+              <li>
+                <span>Company/Position</span>
+                <input type="text" class="resume__edit-input form-control" placeholder="Company/Position" asp-for="Recommendations[i].PersonPositionAndOrganization" />
+              </li>
+              <li>
+                <span>Contacts/Link</span>
+                <input type="text" class="resume__edit-input form-control" placeholder="Contacts/Link" asp-for="Recommendations[i].ContactAndLetterLink" />
+              </li>
+            </ul>
+          }
+        </li>
+        <li>
+          <div class="complete__controls">
+            <button class="complete_back btn btn-light" type="button">BACK</button>
+            <button class="controls_next btn btn-primary" type="submit">PREVIEW</button>
+          </div>
+        </li>
+      </ul>
+  </ul>
+</form>
+<script src="~/js/summary.js"></script>

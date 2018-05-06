@@ -1,0 +1,641 @@
+﻿@using Profile.Model.Models
+@using Profile.Web.ViewModels
+@model Profile.Web.ViewModels.ResumeViewModel
+@{
+    #region For DropDownLists Years
+    Model.Years.Insert(0, 0);
+    IDictionary<int, string> Years = Model.Years.Select((key, value) => new { key, value }).ToDictionary(year => year.key, year => year.key != 0 ? year.key.ToString() : "");
+    #endregion
+}
+<div class="content__position">
+    <div class="content__tabs clearfix">
+        <input class="current__tab" name="currentTabName" type="text" asp-for="CurrentResumeStep"/>
+        <div class="nav nav-pills clearfix" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-contact-tab" data-toggle="pill" href="#v-pills-contact" role="tab" aria-controls="v-pills-home" aria-selected="true"><span>Personal and contact information</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-objective-tab" data-toggle="pill" href="#v-pills-objective" role="tab" aria-controls="v-pills-profile" aria-selected="false"><span>Objective</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-summary-tab" data-toggle="pill" href="#v-pills-summary" role="tab" aria-controls="v-pills-profile" aria-selected="false"><span>Summary</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-skills-tab" data-toggle="pill" href="#v-pills-skills" role="tab" aria-controls="v-pills-messages" aria-selected="false"><span>Skills</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-languages-tab" data-toggle="pill" href="#v-pills-languages" role="tab" aria-controls="v-pills-messages" aria-selected="false"><span>Foreign languages</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-education-tab" data-toggle="pill" href="#v-pills-education" role="tab" aria-controls="v-pills-settings" aria-selected="false"><span>Education</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-develop-tab" data-toggle="pill" href="#v-pills-develop" role="tab" aria-controls="v-pills-settings" aria-selected="false"><span>Professional development, courses</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-certificate-tab" data-toggle="pill" href="#v-pills-certificate" role="tab" aria-controls="v-pills-settings" aria-selected="false"><span>Electronic certificates, tests, exams</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-work-tab" data-toggle="pill" href="#v-pills-work" role="tab" aria-controls="v-pills-settings" aria-selected="false"><span>Work experience</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-portfolio-tab" data-toggle="pill" href="#v-pills-portfolio" role="tab" aria-controls="v-pills-settings" aria-selected="false"><span>Portfolio</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-military-tab" data-toggle="pill" href="#v-pills-military" role="tab" aria-controls="v-pills-settings" aria-selected="false"><span>Military status</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-info-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-settings" aria-selected="false"><span>Additional information</span></a>
+            <a class="nav-link notpassed disabled" id="v-pills-recommends-tab" data-toggle="pill" href="#v-pills-recommends" role="tab" aria-controls="v-pills-settings" aria-selected="false"><span>Recommendations</span></a>
+        </div>
+        @* ----------Personal info------------- *@
+        <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane active show tab__width tab__personal" id="v-pills-contact" role="tabpanel" aria-labelledby="v-pills-contact-tab">
+                <form class="tab__info_input" asp-controller="Resume" asp-action="SaveUserInfoAsync" data-ajax="true" data-ajax-method="POST">
+                    <input type="hidden" name="CurrentResumeStep" value="1"/>
+                    <div class="tab__info clearfix">
+                        <h1 class="tab__header">Personal and contact information</h1>
+                        <span class="tab__info_photo">
+                            @if (Model.UserInfo.Photo != null)
+                            {
+                                <img class="tab__info_avatar" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.UserInfo.Photo))" />
+                            }
+                            else
+                            {
+                                <img class="tab__info_avatar" src="~/images/man.png" alt="photo">
+                            }
+                        </span>
+                        <ul class="tab__info_common">
+                            <li>
+                                <input type="text" class="form-control tab__info_name" aria-label="Default" data-counter="25" placeholder="Name" aria-describedby="inputGroup-sizing-default" asp-for="UserInfo.EnName">
+                                <span class="label label-default count_message"></span>
+                            </li>
+                            <li>
+                                <input type="text" class="form-control tab__info_name" aria-label="Default" data-counter="25" placeholder="Surname" aria-describedby="inputGroup-sizing-default" asp-for="UserInfo.EnSurname">
+                                <span class="label label-default count_message"></span>
+                            </li>
+                            <li>
+                                <input type="tel" class="form-control tab__info_phone" id="phone" placeholder="+375 (__) ___-__-__" aria-label="Default" aria-describedby="inputGroup-sizing-default" asp-for="UserInfo.Phone">
+                            </li>
+                            <li>
+                              <i class="fa-fw fa fa-envelope-o " aria-hidden="true"></i>
+                              <span>@Model.UserInfo.Email</span>
+                            </li>
+                        </ul>
+                    </div>
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <div class="tab__info_social">
+                        <div class="tab__info_skype">
+                            <i class="fa-fw fa fa-skype fa-2x" aria-hidden="true"></i>
+                            <input class="form-control tab__skype_input _uskype" type="text" data-counter="30" asp-for="UserInfo.Skype" name="UserInfo.Skype">
+                            <span class="label label-default" id="count_skype"></span>
+                        </div>
+                        <div class="tab__info_linked">
+                            <i class="fa-fw fa fa-linkedin fa-2x" aria-hidden="true"></i>
+                            <input class="form-control tab__linked_input _ulinked" type="text" data-counter="150" asp-for="UserInfo.Linkedin">
+                            <span class="label label-default" id="count_linked"></span>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="controls_back personal_back btn btn-light" type="button">BACK</button>
+                        <button class="controls_next personal_next btn btn-primary" type="submit">NEXT</button>
+                        <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                    </div>
+                </form>
+            </div>
+            @* ----------Objective------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-objective" role="tabpanel" aria-labelledby="v-pills-objective-tab">
+                <form asp-controller="Resume" asp-action="SaveStreamAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)                    
+                    <input type="hidden" name="CurrentResumeStep" value="2"/>
+                    <div class="tab__objective">
+                        <h1 class="tab__header">Objective</h1>
+                        <p>Mandatory field</p>
+                        <span id="text__objective">I am applying for a position of @Model.StreamFullName.</span>
+                        <div class="controls">
+                            <button class="controls_back btn btn-light" type="button">BACK</button>
+                            <button class="controls_next objective_next btn btn-primary" type="submit">NEXT</button>
+                            <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            @* ----------Summary------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-summary" role="tabpanel" aria-labelledby="v-pills-summary-tab">
+                <form accept-charset="UTF-8" asp-controller="Resume" asp-action="SaveSummaryAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="3" />
+                    <div class="tab__summary tab__head">
+                        <h1 class="tab__header">Summary</h1>
+                        <p>Mandatory field</p>
+                        <div class="tab__summary_main">
+                            <textarea class="form-control tab__summary_textarea _usummary"
+                                      placeholder="Here you can write a brief information about yourself, your personal qualities that could help in the professional implementation.Write how you can be useful for your future employer."
+                                      rows="5" asp-for="Summary" data-counter="1000" name="Summary"></textarea>
+                            <span class="pull-right label label-default count_summary"></span>
+                            <div class="controls">
+                                <button class="controls_back btn btn-light" type="button">BACK</button>
+                                <button class="controls_next summary_next btn btn-primary" type="submit">NEXT</button>
+                                <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            @* ----------Skills------------- *@
+            <div class="tab-pane fade" id="v-pills-skills" role="tabpanel" aria-labelledby="v-pills-skills-tab">
+                <form asp-controller="Resume" asp-action="SaveSkillsAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="4" />
+                    <div class="tab__skills">
+                        <h1 class="tab__header">Skills</h1>
+                        <p>Mandatory field</p>
+                        <div class="input-group input-group-sm tab__skills_input">
+                            @Html.ListBoxFor(m => m.Skills, new MultiSelectList(Model.SkillList, nameof(Skill.Name), nameof(Skill.Name)),
+                                          htmlAttributes: new { @class = "tab__skills_select _uskills", multiple = "multiple", @id="skillsInput" })
+                        </div>
+                        <div class="controls">
+                            <button class="controls_back btn btn-light" type="button">BACK</button>
+                            <button class="controls_next btn btn-primary skill_next" type="submit">NEXT</button>
+                            <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            @* ----------Language------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-languages" role="tabpanel" aria-labelledby="v-pills-languages-tab">
+                <form asp-controller="Resume" asp-action="SaveLanguageAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="5" />
+                    <div class="tab__languages tab__head">
+                        <h1 class="tab__header">Foreign languages</h1>
+                        <p>Mandatory field</p>
+                        <div class="tab__languages_content">
+                            <div class="tab__languages_form">
+                                @if (Model.ForeignLanguages.Count() == 0)
+                                {
+                                    Model.ForeignLanguages = new Dictionary<int, int> { { 0, 0 } };
+                                }
+                                @foreach (var foreignLanguage in Model.ForeignLanguages)
+                                {
+                                    @Html.DropDownList("FakeNameForLanguage",
+                                                       new SelectList(Model.Languages, nameof(Language.Id), nameof(Language.Name), foreignLanguage.Key),
+                                                       htmlAttributes: new { @class = "tab__languages_dropdown _ulanguages" })
+                                    <span class="tab__languages_level">
+                                        @Html.DropDownListFor(
+                                                           m => m.ForeignLanguages[foreignLanguage.Key],
+                                                           new SelectList(Model.LanguageLevels, nameof(LanguageLevel.Id), nameof(LanguageLevel.LevelName), 0),
+                                                           htmlAttributes: new { @class = "tab__languages_level _langlevel" })
+                                        <span class="tab__remove tab__remove_common fa fa-times"></span>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <button class="tab__add clone fa fa-plus-square" type="button"> Add another language</button>
+                    </div>
+                    <div class="controls">
+                        <button class="controls_back btn btn-light" type="button">BACK</button>
+                        <button class="controls_next language__next btn btn-primary" type="submit">NEXT</button>
+                        <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                    </div>
+                </form>
+            </div>
+            @* ----------Education------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-education" role="tabpanel" aria-labelledby="v-pills-education-tab">
+                <form asp-controller="Resume" asp-action="SaveEducationAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="6" />
+                    <div class="tab__education">
+                        <h1 class="tab__header">Education</h1>
+                        <p>Mandatory field</p>
+                        <p>
+                            Here you can indicate the period of study in Educational Center of High Technologies Park
+                            (IT Academy).
+                        </p>
+                        <div class="tab__clone">
+                            @if (Model.Educations.Length == 0)
+                            {
+                                Model.Educations = new Education[1];
+                            }
+                            @for (int i = 0; i < Model.Educations.Count(); i++)
+                            {
+                                <div class="tab__education_form clearfix">
+                                    <span class="tab__remove_education tab__remove_common fa fa-times"></span>
+                                    <div class="tab__education_level clearfix">
+                                        <span>Level</span>
+                                        <div class="input__float_right">
+                                            @Html.DropDownListFor(model => model.Educations[i].EducationLevelId, new SelectList(Model.EducationLevels, nameof(EducationLevel.Id), nameof(EducationLevel.Level)),
+                                           htmlAttributes: new { @class = "_ueducationlevel" })
+                                        </div>
+                                    </div>
+                                    <div class="tab__education_institute clearfix">
+                                        <span class="font_size">Name of educational institution</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control education_input _uinstitute" data-counter="100" type="text" asp-for="Educations[i].EducationalInstitution" />
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab__education_department">
+                                        <span class="font_size">Department</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control education_input _udepartment" data-counter="100" type="text" asp-for="Educations[i].Department" />
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab__education_specialization">
+                                        <span class="font_size">Specialization</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control education_input _uspecialization" data-counter="100" type="text" asp-for="Educations[i].Specialization" />
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab__education_dropdown">
+                                        <div class="tab__education_select">
+                                            <span class="font_size">Year of admission</span>
+                                            <div>
+                                                @Html.DropDownListFor(model => model.Educations[i].YearOfAdmission, new SelectList(Years, "Key", "Value", 0),
+                                                htmlAttributes: new { @class = "education_dropdown _uadmission" })
+                                            </div>
+                                        </div>
+                                        <div class="tab__education_select">
+                                            <span class="font_size">Year of graduation</span>
+                                            <div>
+                                                @Html.DropDownListFor(model => model.Educations[i].YearOfGraduation, new SelectList(Years, "Key", "Value", 0),
+                                                htmlAttributes: new { @class = "education_dropdown _ugraduation" })
+                                            </div>
+                                            <p>If you are currently studying — enter the expected year of graduation.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button class="tab__add education_add fa fa-plus-square" type="button"> Add one more place of study</button>
+                        <div class="controls">
+                            <button class="controls_back btn btn-light" type="button">BACK</button>
+                            <button class="controls_next education_next btn btn-primary" type="submit">NEXT</button>
+                            <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            @* ----------Develop------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-develop" role="tabpanel" aria-labelledby="v-pills-develop-tab">
+                <form asp-controller="Resume" asp-action="SaveCoursesAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="7" />
+                    <div class="tab__develop">
+                        <h1 class="tab__header">Professional development, courses</h1>
+                        <div class="tab__develop_clone">
+                            @if (Model.Courses.Length == 0)
+                            {
+                                Model.Courses = new Course[1];
+                            }
+                            @for (int i = 0; i < Model.Courses.Count(); i++)
+                            {
+                                <div class="tab__develop_form clearfix">
+                                    <span class="tab__remove_develop tab__remove_common fa fa-times"></span>
+                                    <div class="tab__develop_group">
+                                        <span class="tab__develop_span">Responsible Organization</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control tab__develop_input _udev-organization" type="text" data-counter="100" asp-for="Courses[i].Organization" />
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab__develop_group">
+                                        <span class="tab__develop_span">Specialization</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control tab__develop_input _udev-specialization" type="text" data-counter="100" asp-for="Courses[i].Specialization" />
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab__develop_year clearfix">
+                                        <span class="tab__develop_span">Year of graduation</span>
+                                        <div class="input__float_right clearfix">
+                                            @Html.DropDownListFor(model => model.Courses[i].YearOfGraduation, new SelectList(Years, "Key", "Value", 0),
+                                                      htmlAttributes: new { @class = "tab__develop_dropdown" })
+                                        </div>
+                                        <span class="tab__develop_text">If you are currently studying — enter the expected year of graduation</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button class="tab__add develop_add fa fa-plus-square" type="button"> Add one more professional development course or other courses</button>
+                    </div>
+                    <div class="controls">
+                        <button class="controls_back btn btn-light" type="button">BACK</button>
+                        <button class="controls_next develop_next btn btn-primary" type="submit">NEXT</button>
+                        <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                    </div>
+                </form>
+            </div>
+            @* ----------Certificates & tests------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-certificate" role="tabpanel" aria-labelledby="v-pills-certificate-tab">
+                <form asp-controller="Resume" asp-action="SaveExamsAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="8" />
+                    <div class="tab__certificate">
+                        <div class="tab__certificate_clone">
+                            <h1 class="tab__header">Electronic certificates</h1>
+                            @if(Model.Certificates.Length == 0)
+                            {
+                                Model.Certificates = new Certificate[1];
+                            }
+                            @for (int i = 0; i < Model.Certificates.Count(); i++)
+                            {
+                                <div class="tab__certificate_form">
+                                    <span class="tab__remove_certificate fa fa-times"></span>
+                                    <div class="tab_certificate_organization">
+                                        <span>Responsible organization</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control _ucertificate-organization" data-counter="100" type="text" asp-for="Certificates[i].Organization">
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab_certificate_title">
+                                        <span>Certificate title</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control _ucertificate-title" data-counter="100" type="text" asp-for="Certificates[i].Title">
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab__certificate_dropdown clearfix">
+                                        <span>Year of attestation</span>
+                                        <div class="input__float_right">
+                                            @Html.DropDownListFor(model => model.Certificates[i].YearOfAttestation, new SelectList(Years, "Key", "Value", 0),
+                                                      htmlAttributes: new { @class = "certificate__dropdown _ucertificate-attestation" })
+                                        </div>
+                                        <p class="tab__certificate_text">If you are currently studying - enter the expected year of graduation.</p>
+                                    </div>
+                                    <div class="tab__certificate_link clearfix">
+                                        <span>Add a link to the certificate</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control _ucertificate-input" id="ucertificate" type="text" asp-for="Certificates[i].Link">
+                                        </span>
+                                        <span class="label label-default count_link"></span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button class="tab__add certificate_add fa fa-plus-square" type="button"> Add one more certificate</button>
+                        <h1 class="tab__header">Tests, examinations</h1>
+                        <div class="tab__test_clone">
+                            @if (Model.Exams.Length == 0)
+                            {
+                                Model.Exams = new Exam[1];
+                            }
+                            @for (int i = 0; i < Model.Exams.Count(); i++)
+                            {
+                                <div class="tab__test_form">
+                                    <span class="tab__remove_test fa fa-times"></span>
+                                    <div class="tab_certificate_organization">
+                                        <span>Responsible Organization</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control certificate__input _utest-organization" type="text" data-counter="100" asp-for="Exams[i].Organization">
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab_certificate_title">
+                                        <span>Test, examination title</span>
+                                        <span class="input__float_right">
+                                            <input class="form-control _utest-title" type="text" data-counter="100" asp-for="Exams[i].ExamName">
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab__certificate_dropdown clearfix">
+                                        <span>Year of attestation</span>
+                                        <span class="input__float_right">
+                                            @Html.DropDownListFor(model => model.Exams[i].YearOfAttestation, new SelectList(Years, "Key", "Value", 0),
+                                                      htmlAttributes: new { @class = "certificate__dropdown _utest-attestation" })
+                                        </span>
+                                        <p class="tab__certificate_text">If you are currently studying - enter the expected year of graduation.</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <button class="tab__add test_add fa fa-plus-square" type="button"> Add one more test or exam</button>
+                    <div class="controls">
+                        <button class="controls_back btn btn-light" type="button">BACK</button>
+                        <button class="controls_next certificate_next btn btn-primary" type="submit">NEXT</button>
+                        <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                    </div>
+                </form>
+            </div>
+            @* ----------Work------------ *@
+            <div class="tab-pane fade tab__width" id="v-pills-work" role="tabpanel" aria-labelledby="v-pills-work-tab">
+                <div class="tab__work">
+                    <h1 class="tab__header">Work experience</h1>
+                    <p class="tab__work_text">Mandatory field</p>
+                    <p class="tab__work_text">Here you can mention your work on the project while studying in Educational Center of High Technologies Park (IT Academy)</p>
+                    <form asp-controller="Resume" asp-action="SaveWorkExperienceAsync" data-ajax="true" data-ajax-method="POST">
+                        @Html.HiddenFor(m => m.ResumeId)
+                        <input type="hidden" name="CurrentResumeStep" value="9" />
+                        @if (Model.WorkExperiences.Length == 0)
+                        {
+                            Model.WorkExperiences = new WorkExperienceViewModel[1];
+                        }
+                        @for (int i = 0; i < Model.WorkExperiences.Count(); i++)
+                        {
+                            <div class="tab__work_form">
+                                <div class="tab__work_clone">
+                                    <span class="tab__remove_work tab__remove_common fa fa-times"></span>
+                                    <div class="tab__work_start">
+                                        <span>Start of work</span>
+                                        <div class="tab__work_right">
+                                            @Html.DropDownListFor(model => model.WorkExperiences[i].SelectedStartMonth, new SelectList(Model.Months, "Key", "Value"),
+                                                          htmlAttributes: new { @class = "tab__work_months tab__work_dropdown _work_start-month" })
+                                            @Html.DropDownListFor(model => model.WorkExperiences[i].SelectedStartYear, new SelectList(Years, "Key", "Value"),
+                                                          htmlAttributes: new { @class = "tab__work_year tab__work_dropdown _work_start-year" })
+                                            <label class="tab__work_checkbox form-check-label">
+                                                @Html.CheckBoxFor(model => model.WorkExperiences[i].ToPresent, new { @class = "form-check-input work_checkbox _work_present" })
+                                                To present
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="tab__work_end">
+                                        <div class="tab__work_finish">
+                                            <span>End of work</span>
+                                            <div class="tab__work_right">
+                                                @Html.DropDownListFor(model => model.WorkExperiences[i].SelectedEndMonth, new SelectList(Model.Months, "Key", "Value", 0),
+                                                              htmlAttributes: new { @class = "tab__work_months tab__work_dropdown end__work _work_end-month" })
+                                                @Html.DropDownListFor(model => model.WorkExperiences[i].SelectedEndYear, new SelectList(Years, "Key", "Value", 0),
+                                                              htmlAttributes: new { @class = "tab__work_year tab__work_dropdown end__work _work_end-year" })
+                                            </div>
+                                        </div>
+                                        <div class="tab__work_organization clearfix">
+                                            <span>Organization</span>
+                                            <div class="tab__work_right">
+                                                <input class="form-control tab__work_input _work-organization" type="text" data-counter="100" asp-for="WorkExperiences[i].Organization">
+                                                <span class="label label-default count_message"></span>
+                                            </div>
+                                        </div>
+                                        <div class="tab__work_position clearfix">
+                                            <span>Position</span>
+                                            <div class="tab__work_right">
+                                                <input class="form-control tab__work_input _work-position" type="text" data-counter="100" asp-for="WorkExperiences[i].Position">
+                                                <span class="label label-default count_message"></span>
+                                            </div>
+                                        </div>
+                                        <div class="tab__work_activities clearfix">
+                                            <span class="tab__work_task">Responsibilities, tasks, activities</span>
+                                            <div class="tab__work_right">
+                                                <textarea class="form-control tab__work_textarea _work-respons" data-counter="1000" asp-for="WorkExperiences[i].Responsibilities" rows="4"></textarea>
+                                                <span class="label label-default count_textarea-work"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <button class="tab__add add_work fa fa-plus-square" type="button"> Add an employer</button>
+                        <div class="controls">
+                            <button class="controls_back btn btn-light" type="button">BACK</button>
+                            <button class="controls_next work_next btn btn-primary" type="submit">NEXT</button>
+                            <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            @* ----------Portfolio------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-portfolio" role="tabpanel" aria-labelledby="v-pills-portfolio-tab">
+                <form asp-controller="Resume" asp-action="SavePortfolioAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="10" />
+                    <div class="tab__portfolio">
+                        <h1 class="tab__header">Portfolio</h1>
+                        <p class="tab__portfolio_text">
+                            Add a link
+                        </p>
+                        @if (Model.Portfolios.Length == 0)
+                        {
+                            Model.Portfolios = new Portfolio[1];
+                        }
+                        @for (int i = 0; i < Model.Portfolios.Count(); i++)
+                        {
+                            <div class="tab__portfolio_form">
+                                <input class="tab__portfolio_link form-control" type="text" asp-for="Portfolios[i].Link" />
+                                <span class="count_link"></span>
+                                <span class="tab__portfolio_add"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                                <span class="tab__remove_portfolio tab__remove_common fa fa-times"></span>
+                            </div>
+                        }
+                    </div>
+                    <div class="controls">
+                        <button class="controls_back btn btn-light" type="button">BACK</button>
+                        <button class="controls_next portfolio_next btn btn-primary" type="submit">NEXT</button>
+                        <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                    </div>
+                </form>
+            </div>
+            @* ----------Military------------- *@
+            <div class="tab-pane fade" id="v-pills-military" role="tabpanel" aria-labelledby="v-pills-military-tab">
+                <form asp-controller="Resume" asp-action="SaveMilitaryStatusAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="11" />
+                    <div class="tab__military">
+                        <h1 class="tab__header">Military status</h1>
+                        <span>Mandatory field</span>
+                        <div class="custom-controls-stacked">
+                            <label class="custom-control custom-radio">
+                                <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Doesn't apply">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Doesn't apply</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Exempted">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Exempted</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Completed">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Completed</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Postponed">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Postponed</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input asp-for="MilitaryStatus.Status" type="radio" class="custom-control-input" value="Currently serving">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Currently serving</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="controls_back btn btn-light" type="button">BACK</button>
+                        <button class="controls_next next_step btn btn-primary" type="submit">NEXT</button>
+                        <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                    </div>
+                </form>
+            </div>
+            @* ----------Additional------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab">
+                <form accept-charset="UTF-8" asp-controller="Resume" asp-action="SaveAdditionalInfoAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="12" />
+                    <div class="tab__additional">
+                        <h1 class="tab__header">Additional information</h1>
+                        <div class="tab__info_main clearfix">
+                            <textarea class="form-control tab__info_textarea" name="AdditionalInfo.Text" asp-for="AdditionalInfo.Text" data-counter="1000"
+                                      placeholder="Here you can write about your professional interests, hobby, civic activities, awards or volunteering"
+                                      rows="5"></textarea>
+                            <span class="label label-default count_info"></span>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="controls_back btn btn-light" type="button">BACK</button>
+                        <button class="controls_next info__next btn btn-primary" type="submit">NEXT</button>
+                        <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                    </div>
+                </form>
+            </div>
+            @* ----------Recommends------------- *@
+            <div class="tab-pane fade tab__width" id="v-pills-recommends" role="tabpanel" aria-labelledby="v-pills-recommends-tab">
+                <form asp-controller="Resume" asp-action="SaveRecomendationsAsync" data-ajax="true" data-ajax-method="POST">
+                    @Html.HiddenFor(m => m.ResumeId)
+                    <input type="hidden" name="CurrentResumeStep" value="13" />
+                    <div class="tab__recommend">
+                        <h1 class="tab__header">Recommendations</h1>
+                        <h3>Add contacts of a person who can give a recommendation</h3>
+                        <div class="tab__recommend_block">
+                            @if (Model.Recommendations.Length == 0)
+                            {
+                                Model.Recommendations = new Recommendation[1];
+                            }
+                            @for (int i = 0; i < Model.Recommendations.Count(); i++)
+                            {
+                                <div class="tab__recommend_form clearfix">
+                                    <div class="tab__recommend_add-block">
+                                        <span class="tab__recommend_remove tab__remove_common fa fa-times"></span>
+                                    </div>
+                                    <div class="tab__recommend_input">
+                                        <span>Name Surname</span>
+                                        <span class="input__float_right">
+                                            <input type="text" class="form-control _urecommend-name" asp-for="Recommendations[i].PersonName" data-counter="100" />
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div class="tab__recommend_input">
+                                        <span>Company/Position</span>
+                                        <span class="input__float_right">
+                                            <input type="text" class="form-control _urecommend-position" asp-for="Recommendations[i].PersonPositionAndOrganization" data-counter="100" />
+                                            <span class="label label-default count_message"></span>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span>Contacts/Link</span>
+                                        <span class="input__float_right">
+                                            <textarea class="tab__contact_input form-control _urecommend-organization"
+                                                      placeholder="Here you can add contacts(phone, email, skype, etc) or a link for a recommendation letter"
+                                                      asp-for="Recommendations[i].ContactAndLetterLink" rows="5" maxlength="1000"></textarea>
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <span class="tab__recommend_add tab__add"><i class="fa fa-plus-square" aria-hidden="true"> Add one more person</i></span>
+                        <div class="controls">
+                            <button class="controls_back btn btn-light" type="button">BACK</button>
+                            <button class="controls_next recommends__next btn btn-primary" type="submit">NEXT</button>
+                            <a href="/Home/Index" class="controls_cancel">CANCEL</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="messageBox__complete">
+        <div class="text-center">
+            <div class="messageBox__content_text">
+                <p>Congratulations!</p>
+                <p>You have just finished to fill in your resume.</p>
+                <p>Please check you resume</p>
+                <p>before you submit it to our HR.</p>
+            </div>
+            <div class="messageBox__controls">
+                <button type="button" class="complete_back btn btn">BACK</button>
+                <button type="button" class="controls_next btn btn-primary" onclick="window.location.href='/ResumeReview/Index?resumeId=@Model.ResumeId'">Check</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/summary.js"></script>

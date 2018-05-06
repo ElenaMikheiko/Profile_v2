@@ -1,0 +1,25 @@
+﻿@model Dictionary<string, string>
+@{
+    ViewData["Title"] = "Success!";
+}
+<br />
+<div class="container-fluid">
+    <div class="pull-left">
+        <h4>The following accounts have been imported: </h4>
+        <table class="table table-striped" style="width: 100%">
+            <thead>
+                <tr><th>Email</th><th>Password</th></tr>
+            </thead>
+            @foreach (KeyValuePair<string, string> kvp in Model)
+                {
+                    <tr><td>@kvp.Key</td><td>@kvp.Value</td></tr>
+                }
+        </table>
+        <br />
+        <button class="btn btn-primary" onclick="location.href='@Url.Action("ImportAccounts", "Admin")';return false;">Back</button>
+    </div>
+    <div class="pull-right">
+        <img src="~/images/Fluttershy.gif" style="height: 40%; width: 40%;" />
+    </div>
+</div>
+

@@ -1,0 +1,13 @@
+﻿@model String
+@{
+    ViewData["Title"] = "DeleteResult";
+}
+<br />
+<div class="container-fluid">
+    @{
+
+        <h3>@Model has been successfully deleted!</h3>
+
+    }
+    <button class="btn btn-primary" onclick="location.href='@Url.Action("ImportAccounts", "Admin")';return false;">Back</button>
+</div>

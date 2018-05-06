@@ -1,0 +1,79 @@
+﻿@model Profile.Web.ViewModels.AdminViewModels.ImportAccountsViewModel
+@{
+    ViewData["Title"] = "ImportAccounts";
+}
+<br />
+<div class="container-fluid">
+    <h4>Import accounts</h4>
+    <p>In order to create accounts - specify the link to the Google table with the data corresponding to the specified sample</p>
+    <img src="~/images/google_table_example.png"/>   
+    @Html.ValidationSummary()
+    <div>
+        <span>Link to the Google table with Edit permissions (for students)</span>
+        <form asp-controller="Admin" asp-action="ImportStudentAccounts" class="input-group">
+            @Html.TextBoxFor(model => model.ApiKey, new { @class = "form-control" })
+            <input class="btn btn-primary pull-right" type="submit" value="Import" />
+        </form>
+        <span style="color:bisque;">https://docs.google.com/spreadsheets/d/1zvDXBRjRYk6VKiq-a4YlS5qe1OyAGIH6OMJuIDfwgyc/edit#gid=0 </span>
+        <br />
+        <span>Link to the Google table with Edit permissions (for trainers)</span>
+        <form asp-controller="Admin" asp-action="ImportTrainerAccounts" class="input-group">
+            @Html.TextBoxFor(model => model.ApiKey, new { @class = "form-control" })
+            <input class="btn btn-primary pull-right" type="submit" value="Import" />
+        </form>
+        <span style="color:bisque;">https://docs.google.com/spreadsheets/d/1YIS5vkcaSGswzKe5HAkp2VZU3VsySbzN8c6HgA0uw3s/edit#gid=0 </span>
+        <form asp-controller="Admin" asp-action="DeleteApiKey">
+            <input class="btn btn-danger pull-right" type="submit" value="Delete Api key" />
+        </form>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <div>
+        @if (Model.studentEmails.Count > 0)
+        {
+            <h4>List of existing students</h4>
+            @foreach (string email in Model.studentEmails)
+            {
+            <form asp-controller="Admin" asp-action="DeleteStudentAccount" class="input-group">
+                <label for="emailToRemove" class="form-control">@email</label>
+                <input type="text" name="emailToRemove" value="@email" hidden />
+                @if (email == "student@profile.com")
+                {
+                    <input class="btn btn-danger" type="submit" value="Delete" disabled />
+                }
+                else
+                {
+                    <input class="btn btn-danger" type="submit" value="Delete" />
+
+                }
+            </form>
+            }
+        }
+    </div>
+    <br />
+    <div>
+        @if (Model.trainerEmails.Count > 0)
+        {
+            <h4>List of existing trainers</h4>
+            @foreach (string email in Model.trainerEmails)
+            {
+                <form asp-controller="Admin" asp-action="DeleteTrainerAccount" class="input-group">
+                    <label for="emailToRemove" class="form-control">@email</label>
+                    <input type="text" name="emailToRemove" value="@email" hidden />
+                    @if (email == "trainer@profile.com")
+                    {
+                        <input class="btn btn-danger" type="submit" value="Delete" disabled />
+                    }
+                    else
+                    {
+                        <input class="btn btn-danger" type="submit" value="Delete" />
+
+                    }
+                </form>
+            }
+        }
+    </div>
+</div>
+

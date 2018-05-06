@@ -1,0 +1,30 @@
+﻿@model Profile.Web.ViewModels.AdminViewModels.ImportAccountsViewModel
+@{
+    ViewData["Title"] = "ImportApiKey";
+}
+<br />
+<div class="container-fluid">
+    <h4>Import Api key</h4>
+    @Html.ValidationSummary()
+    <div>
+        <span>To work with Google table, please upload your token.</span>
+        <form asp-controller="Admin" asp-action="ImportApiKey" class="input-group">
+            <input name="apiKey" type="text" class="form-control" />
+            <input class="btn btn-primary pull-right" type="submit" value="Upload" />
+        </form>
+        <span style="color:bisque;">AIzaSyD6MYQCVZdN93XIL--ekM0SPOyQeY6fkPU</span>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <div>
+        <ul>
+            <li>Login to your Google account</li>
+            <li><a href="https://console.developers.google.com/start/api?id=sheets.googleapis.com">This guide</a> will help you to create a new project in Google</li>
+            <li>On the <b>Add credentials to your project</b> page, click the <b>Cancel</b> button</li>
+            <li>Select <b>Create credentials</b> - <b>API key</b></li>
+            <li>Copy the generated key in the input field and press <b>Import</b></li>
+        </ul>
+    </div>
+</div>

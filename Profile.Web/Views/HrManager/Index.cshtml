@@ -1,0 +1,80 @@
+﻿@model Profile.Web.ViewModels.HrManagerViewModel.HrManagerViewModel
+
+@{
+    ViewData["Title"] = "HRManager";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int rowCounter = 0;
+}
+
+<section class="section_students">
+  <button class="table__show_all btn btn-primary">Show all</button>
+  <table class="table table-striped" id="students-table" data-toggle="table" data-show-columns="true" cellspacing="0">
+    <thead class="table__head">
+      <tr>
+        <th>№</th>
+        <th>Choose</th>
+        <th>Stream</th>
+        <th>Name rus</th>
+        <th>Surname rus</th>
+        <th>Date of birth</th>
+        <th>E-mail</th>
+        <th class="table__phone_col">Phone</th>
+        <th>Trainer</th>
+        <th>Date of graduate</th>
+        <th>Final score</th>
+        <th>Companies where recommended</th>
+        <th>Employer company</th>
+        <th>Recommendaton/Employment date</th>
+        <th>Resume status</th>
+        <th>Comments</th>
+        <th>Education</th>
+        <th>Language</th>
+        <th>Language level</th>
+        <th>Skills</th>
+        <th>Looking for a job</th>
+      </tr>
+    </thead>
+    <tbody class="table__body">
+      @foreach (var item in Model.TableData)
+      {
+        @try
+        {
+          <tr>
+            <td>
+              @{ rowCounter++; }
+              @rowCounter
+            </td>
+            <td></td>
+            <td>@Html.DisplayFor(x => item.Stream.StreamShortName)</td>
+            <td>@Html.DisplayFor(x => item.UserInfo.RuName)</td>
+            <td>@Html.DisplayFor(x => item.UserInfo.RuSurname)</td>
+            <td>@Html.DisplayFor(x => item.DateOfBirth)</td>
+            <td>@Html.DisplayFor(x => item.UserInfo.Email)</td>
+            <td class="table__phone_col">
+              +@item.PhoneNumber[0]@item.PhoneNumber[1]@item.PhoneNumber[2] (@item.PhoneNumber[3]@item.PhoneNumber[4]) @item.PhoneNumber[5]@item.PhoneNumber[6]@item.PhoneNumber[7] @item.PhoneNumber[8]@item.PhoneNumber[9] @item.PhoneNumber[10]@item.PhoneNumber[11]
+            </td>
+            <td>@Html.DisplayFor(x => item.TrainerEmail)</td>
+            <td>@Html.DisplayFor(x => item.DateOfGraduation)</td>
+            <td>@Html.DisplayFor(x => item.Student.GraduationMark)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        }
+        catch
+        {
+            <td>Error occured while retrieving value for @item.UserInfo.Email. Please check if all fields in database are correct.</td>
+            continue;
+        }
+      }
+    </tbody>
+   </table>
+  </section>
+<script src="~/js/table.js"></script>

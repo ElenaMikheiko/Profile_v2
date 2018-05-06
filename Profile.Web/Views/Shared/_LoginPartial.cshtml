@@ -1,0 +1,40 @@
+@using Profile.Model.Infrastructure
+@{ 
+    var user = ViewData[ProfilerRoles.UserSessionKey] as Profile.Model.Models.UserData;
+}
+
+@if (user!=null)
+{
+    <div class="container__header_user clearfix">
+        <div class="container__header_info clearfix">
+            <p class="container__header_name">
+                @user.Name @user.Surname
+            </p>
+            <p class="container__header_email">
+                @user.Email
+            </p>
+        </div>
+        <div class="navigation clearfix">
+            <p class="closebtn" v-on:click="navToggle()">
+                <span class="line1"></span>
+                <span class="line2"></span>
+                <span class="line3"></span>
+            </p>
+            <ul class="menulist clearfix">
+              @if (user.Role == ProfilerRoles.Student)
+  {
+            <li>@Html.ActionLink("Resume", "Index", "Resume", null, new { @class = "menuitems resume_button" })</li>
+}
+              @if (user.Role == ProfilerRoles.Admin)
+  {
+            <li>@Html.ActionLink("Import accounts", "ImportAccounts", "Admin", null, new { @class = "menuitems" })</li>
+}
+              <li>
+                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+                  <button type="submit" class="menuitems">Log out</button>
+                </form>
+              </li>
+            </ul>
+        </div>
+    </div>
+}

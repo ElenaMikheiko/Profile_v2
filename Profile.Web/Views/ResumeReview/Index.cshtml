@@ -1,0 +1,267 @@
+﻿﻿﻿﻿@using Profile.Model.Infrastructure
+@using System.Globalization;
+@using Profile.Model.Models.Infrastructure;
+@model Profile.Web.ViewModels.ResumeReviewViewModel
+
+@{
+    ViewData["Title"] = "Resume Review";
+}
+@section Scripts {
+}
+@{
+    string ConvertMonthNumberToMonthName(int monthNumber)
+    {
+        return CultureInfo.GetCultureInfoByIetfLanguageTag("EN").DateTimeFormat.MonthNames[Convert.ToInt32(monthNumber) - 1];
+    }
+}
+<div class="resume__list col-lg-7 col-md-7 col-sm-7">
+    <ul class="resume__list_complete">
+        <h5 class="resume__list_name">@Model.UserInfo.EnName @Model.UserInfo.EnSurname</h5>
+        <li class="resume__list_personal clearfix">
+            <ul class="resume__info left">
+                <li>
+                    <i class="fa-fw fa fa-envelope-o" aria-hidden="true"></i>
+                    <span>@Model.UserInfo.Email</span>
+                </li>
+                <li>
+                    <i class="fa-fw fa fa-phone-square" aria-hidden="true"></i>
+                    <span> @Model.UserInfo.Phone</span>
+                </li>
+                @if(@Model.UserInfo.Skype != null)
+                {
+                    <li>
+                        <i class="fa-fw fa fa-skype" aria-hidden="true"></i>
+                        <span>@Model.UserInfo.Skype</span>
+                    </li>
+                }
+                @if(Model.UserInfo.Linkedin != null)
+                {
+                    <li>
+                        <i class="fa-fw fa fa-linkedin" aria-hidden="true"></i>
+                        <span>@Model.UserInfo.Linkedin</span>
+                    </li>
+                }
+            </ul>
+            <div class="resume__list_image">
+                @if (Model.UserInfo.Photo != null)
+                {
+                    <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.UserInfo.Photo))" alt="User photo" />
+                }
+                else
+                {
+                    <img src="~/images/man.png" alt="User photo" />
+                }
+            </div>
+        </li>
+        <li class="resume__objective">
+            <h5>Objective</h5>
+            <div class="resume__objective_text">
+                <span>I am applying for a position of <span>@Model.Stream.StreamFullName</span>.</span>
+            </div>
+        </li>
+        <li class="resume__summary">
+            <h5>Summary</h5>
+            <p>@Model.Summary.Text</p>
+        </li>
+        <li class="resume__skills">
+            <h5>Skills</h5>
+            <ul class="resume__skills_list">
+                @foreach (var skill in Model.Skills)
+                {
+                    <li>@skill</li>
+                }
+            </ul>
+        </li>
+        <li class="resume__languages">
+            <h5>Languages</h5>
+            <ul class="resume__languges_list">
+                @foreach (var foreignLanguage in Model.ForeignLanguages)
+                {
+                    <li>
+                        <span class="resume__languges_lang">@foreignLanguage.Language.Name</span>
+                        <span class="resume__languges_level">@foreignLanguage.LanguageLevel.LevelName</span>
+                    </li>
+                }
+            </ul>
+        </li>
+        <li class="resume__education">
+            <h5>Education</h5>
+            @foreach (var education in Model.Educations)
+            {
+                <ul class="resume__education_info indent">
+                    <li>
+                        <span>@education.YearOfAdmission - @education.YearOfGraduation,</span>
+                        <span>@education.EducationalInstitution</span>
+                    </li>
+                    <li>
+                        <span>@education.Department</span>
+                        <span>@education.Specialization</span>
+                    </li>
+                </ul>
+            }
+        </li>
+        @if (Model.Courses[0].Organization != null)
+        {
+            <li>
+                <h5>Professional development, courses</h5>
+                @foreach (var course in Model.Courses)
+                {
+                    <ul>
+                        <li>@course.YearOfGraduation, @course.Organization</li>
+                        <li>@course.Specialization</li>
+                    </ul>
+                }
+            </li>
+        }
+        @if (Model.Certificates[0].Organization != null)
+        {
+            <li>
+                <h5>Electronic certificates</h5>
+                @foreach (var certificate in Model.Certificates)
+                {
+                    <ul>
+                        <li>@certificate.YearOfAttestation, @certificate.Organization</li>
+                        <li>@certificate.Title</li>
+                        @if (certificate.Link != null)
+                        {
+                            <li><a href="@certificate.Link">Certificate link </a></li>
+                        }
+                    </ul>
+                }
+            </li>
+        }
+        @if (Model.Exams[0].Organization != null)
+        {
+            <li>
+                <h5>Tests, examinations</h5>
+                @foreach (var exam in Model.Exams)
+                {
+                    <ul>
+                        <li>@exam.YearOfAttestation, @exam.Organization</li>
+                        <li>@exam.ExamName</li>
+                    </ul>
+                }
+            </li>
+        }
+        <li class="resume__work">
+            <h5>Work experience</h5>
+            @foreach (var workExperience in Model.WorkExperience)
+            {
+                <ul class="resume__work_info indent">
+                    <li>
+                        <span>@(ConvertMonthNumberToMonthName(workExperience.StartDate.Month)) @workExperience.StartDate.Year - </span>
+                        @if (workExperience.ToPresent)
+                        {
+                            <span>To Present,</span>
+                        }
+                        else
+                        {
+                            <span>@(ConvertMonthNumberToMonthName(workExperience.EndDate.Value.Month)) @workExperience.EndDate.Value.Year,</span>
+                        }
+                        <span>@workExperience.Organization</span>
+                    </li>
+                    <li>
+                        <span>Position:</span>
+                        <span>@workExperience.Position</span>
+                    </li>
+                    <li>
+                        <span>Responsibilites:</span>
+                        <ul class="list__decoration">
+                            <li>@workExperience.Responsibilities</li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+        </li>
+        @if (Model.Portfolio[0].Link != null)
+        {
+            <li class="resume__portfolio">
+                <h5>Portfolio</h5>
+                <ul class="resume__portfolio_link">
+                    @foreach (var link in @Model.Portfolio)
+                    {
+                        if (link.Link != null)
+                        {
+                            <li><a href="@link.Link">Portfolio link </a></li>
+                        }
+                    }
+                </ul>
+            </li>
+        }
+        <li class="resume__military">
+            <h5>Military status</h5>
+            <div class="resume__military_status">@Model.MilitaryStatus.Status</div>
+        </li>
+        @if (Model.AdditionalInfo.Text != null)
+        {
+            <li class="resume__additional">
+                <h5>Additional information</h5>
+                <p class="resume__additional_info">@Model.AdditionalInfo.Text</p>
+            </li>
+        }
+        @if (Model.Recommendations[0].PersonName != null)
+        {
+            <li class="resume__recommend">
+                <h5>Recommendations</h5>
+                @foreach (var recommendation in Model.Recommendations)
+                {
+                    <ul class="resume__recommend_info indent">
+                        <li>
+                            <span>@recommendation.PersonName,</span>
+                            <span>@recommendation.PersonPositionAndOrganization</span>
+                        </li>
+                        <li>
+                            <span>@recommendation.ContactAndLetterLink</span>
+                        </li>
+                    </ul>
+                }
+            </li>
+        }
+    </ul>
+    @*TODO: Hiding buttons depending on the resume status. 
+            Change this code block or add more other statuses, when they will be implemented*@
+    @if (Model.ResumeStatus != ResumeStatuses.Submitted)
+    {
+        <div class="resume__edit_button">
+            <a class="edit_button btn btn-light" asp-action="EditResume" asp-controller="EditResume" asp-route-resumeId="@Model.ResumeId">Edit <i class="fa fa-pencil" aria-hidden="true"></i></a>
+        </div>
+        <div class="complete__controls">
+            <button class="controls_back btn btn-light" type="button">BACK</button>
+            <button class="controls_next resume_submit btn btn-primary" type="button">Submit</button>
+        </div>
+    }
+    @*TODO: Delete this button later. The button-stub for recovering resume
+        status "New" instead "Submitted".  *@
+    @if (Model.ResumeStatus == ResumeStatuses.Submitted)
+    {
+        <div class="resume__edit_button">
+            <form method="post">
+                <button class="controls_back btn btn-light" asp-action="SetStatusNewForResume" asp-controller="ResumeReview" asp-route-resumeId="@Model.ResumeId">BACK</button>
+            </form>
+        </div>
+    }
+    @* end block TODO *@
+</div>
+<div class="review__pop-up">
+    <div class="review__pop-up_main">
+        <div class="review__pop-up_header clearfix">
+            <span class="review__pop-up_close">
+                <i class="fa fa-times fa-3x review__pop-up_close" aria-hidden="true"></i>
+            </span>
+        </div>
+        <div class="review__pop-up-up_text">
+            <p>
+                You're at the finish line! Please note that after submission the resume is closed for editing.
+                When HR approves your resume, you’ll be informed by e-mail. If HR has comments on your resume,
+                you’ll also be informed and resume will be returned to you for correction.
+            </p>
+        </div>
+        <form asp-controller="ResumeReview" asp-action="SubmitResume" method="POST" asp-route-resumeId="@Model.ResumeId">
+            <div class="review__pop-up_controls">
+                <button class="review__pop-up_button-cancel controls_back btn btn-primary" type="button">Cancel</button>
+                <button class="review__pop-up_button-submit controls_next btn btn-primary" type="submit">OK</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="~/js/resumeReview.js"></script>

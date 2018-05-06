@@ -1,0 +1,31 @@
+﻿{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=178.124.206.53;Database=ProfileTest;Integrated Security=False;User Id=ProfileApplication;Password=ProfileApp123;MultipleActiveResultSets=True"
+  },
+  "ProfileAppLink": "http://178.124.206.53:81/",
+  "AdminSettings": {
+    "AdminEmail": "admin@profile.com",
+    "AdminPassword": "admin123"
+  },
+
+  "HRSettings": {
+    "HREmail": "hr@profile.com",
+    "HRPassword": "hmanager123"
+  },
+
+  "StudentSettings": {
+    "StudentEmail": "student@profile.com",
+    "StudentPassword": "student123"
+  },
+
+  "TeacherSettings": {
+    "TeacherEmail": "teacher@profile.com",
+    "TeacherPassword": "teacher123"
+  },
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+﻿﻿@using Profile.Model.Infrastructure
+@model Profile.Web.ViewModels.ResumeViewModel
+
+@{
+    ViewData["Title"] = "Resume";
+    var user = ViewData[ProfilerRoles.UserSessionKey] as Profile.Model.Models.UserData;
+}
+@section Scripts {
+    <script src="~/js/lib/jquery.inputmask.bundle.js"></script>
+    <script src="~/js/lib/phone.js"></script>
+}
+@section Styles {
+    <link href="@Url.Content("/style/resume.css")" rel="stylesheet" />
+}
+<div class="messageBox">
+    <div class="messageBox__content">
+        <div class="text-center">
+            <div class="messageBox__content_text">
+                <p>Dear @Model.UserInfo.EnName @Model.UserInfo.EnSurname!</p>
+                <p>You will be offered to fill in your resume step by step.</p>
+                <p>Our instructions will help you.</p>
+            </div>
+            <div class="messageBox__controls">
+                <button type="button" class="controls_back btn btn-light" onclick="window.location.href='/Home/Index'">BACK</button>
+                <button type="button" class="controls_next btn btn-primary controls_next-start">START</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="resumeFormContainer">
+    @Html.Partial("Form")
+</div>
